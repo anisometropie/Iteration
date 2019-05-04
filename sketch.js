@@ -179,7 +179,11 @@ class Vector {
     push();
     const red = map(this.length, 0, 100, 0, 255);
     const blue = map(this.length, 0, 100, 255, 0);
-    const weight = map(this.length, 0, 100, 0.4, 4);
+    const weight = map(this.length, 0, 1000, 0.4, 20);
+    // const weight = d3
+    //   .scaleLog()
+    //   .domain([10, 100000])
+    //   .range([0.4, 4])(this.length);
     stroke(red, 0, blue);
     strokeWeight(weight);
     v.display(graph);
