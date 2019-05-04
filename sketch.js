@@ -65,7 +65,9 @@ class Complex {
 
   get square() {
     const { real, imaginary } = this;
-    return new Complex(real ** 2 - imaginary ** 2, 2 * real * imaginary);
+    const z = this.clone();
+    z.set(real ** 2 - imaginary ** 2, 2 * real * imaginary);
+    return z;
   }
 
   get modulus() {
@@ -77,13 +79,8 @@ class Complex {
   }
 
   clone() {
-    const prototype = Object.getPrototypeOf(this);
-    const obj = Object.create(prototype);
-    for (const key of Reflect.ownKeys(this)) {
-      const descriptors = Reflect.getOwnPropertyDescriptor(this, key);
-      Reflect.defineProperty(obj, key, descriptors);
-    }
-    return obj;
+    const clone = _.cloneDeep(this);
+    return clone;
   }
 
   toString() {
@@ -133,12 +130,6 @@ class Vector {
     this.end = end;
   }
 
-  display(graph) {
-    const start = this.start.getPixelCoords(graph);
-    const end = this.end.getPixelCoords(graph);
-    line(start.x, start.y, end.x, end.y);
-  }
-
   get x() {
     return this.end.real - this.start.real;
   }
@@ -161,9 +152,32 @@ class Vector {
     const v = new Complex(this.x, this.y);
     return v.modulus;
   }
+
+  display(graph) {
+    const start = this.start.getPixelCoords(graph);
+    const end = this.end.getPixelCoords(graph);
+    line(start.x, start.y, end.x, end.y);
+  }
+
+  clone() {
+    const clone = _.cloneDeep(this);
+    return clone;
+  }
+
+  displayNormalized(graph, length) {
+    const v = this.clone();
+    v.length = length;
+    push();
+    const red = map(this.length, 0, 100, 0, 255);
+    const blue = map(this.length, 0, 100, 255, 0);
+    stroke(red, 0, blue);
+    strokeWeight(this.length);
+    v.display(graph);
+    pop();
+  }
 }
 
-const DIMENSION = 21;
+const DIMENSION = 1;
 const GRAPH = {
   XMIN: -10,
   XMAX: 10,
@@ -171,34 +185,33 @@ const GRAPH = {
   YMAX: 10
 };
 
-const mouse = new ComplexPoint(-0.345, 0.59, "c");
-const grid = [...Array(DIMENSION).keys()].map(n =>
-  [...Array(DIMENSION).keys()].map(m => {
-    const start = new ComplexPoint(
-      n - (DIMENSION - 1) / 2,
-      m - (DIMENSION - 1) / 2
-    );
-    const end = ComplexPoint.multiply(start, 2);
-    return new Vector(start, end);
-  })
-);
+let grid;
 const a = new Complex(1, 3);
 const b = new Complex(2, 5);
 const v = new Vector(a, b);
-console.log(v, v.length);
-v.length;
+const vv = v.clone();
+console.log(v.length, vv.length);
+console.log(v.start === vv.start);
+vv.length = 1;
+console.log(v.length, vv.length);
 
 function setup() {
   canvas = createCanvas(800, 800);
-  grid.forEach(arr => arr.forEach(z => (z.length = 0.5)));
+  grid = [...Array(DIMENSION).keys()].map(x =>
+    [...Array(DIMENSION).keys()].map(y => {
+      const start = new ComplexPoint(
+        map(x, 0, DIMENSION, GRAPH.XMIN, GRAPH.XMAX),
+        map(y, 0, DIMENSION, GRAPH.YMIN, GRAPH.YMAX)
+      );
+      const end = start.square;
+      return new Vector(start, end);
+    })
+  );
 }
 
 function draw() {
-  background(220);
+  background(255);
   line(width / 2, 0, width / 2, height);
   line(0, height / 2, width, height / 2);
-  push();
-  stroke(200, 100, 100);
-  grid.forEach(arr => arr.forEach(z => z.display(GRAPH)));
-  pop();
+  grid.forEach(arr => arr.forEach(z => z.displayNormalized(GRAPH, 0.4)));
 }
