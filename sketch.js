@@ -153,15 +153,15 @@ class Vector {
     return v.modulus;
   }
 
+  clone() {
+    const clone = _.cloneDeep(this);
+    return clone;
+  }
+
   display(graph) {
     const start = this.start.getPixelCoords(graph);
     const end = this.end.getPixelCoords(graph);
     line(start.x, start.y, end.x, end.y);
-  }
-
-  clone() {
-    const clone = _.cloneDeep(this);
-    return clone;
   }
 
   displayNormalized(graph, length) {
@@ -170,14 +170,15 @@ class Vector {
     push();
     const red = map(this.length, 0, 100, 0, 255);
     const blue = map(this.length, 0, 100, 255, 0);
+    const weight = map(this.length, 0, 100, 0.4, 4);
     stroke(red, 0, blue);
-    strokeWeight(this.length);
+    strokeWeight(weight);
     v.display(graph);
     pop();
   }
 }
 
-const DIMENSION = 1;
+const DIMENSION = 31;
 const GRAPH = {
   XMIN: -10,
   XMAX: 10,
@@ -186,14 +187,6 @@ const GRAPH = {
 };
 
 let grid;
-const a = new Complex(1, 3);
-const b = new Complex(2, 5);
-const v = new Vector(a, b);
-const vv = v.clone();
-console.log(v.length, vv.length);
-console.log(v.start === vv.start);
-vv.length = 1;
-console.log(v.length, vv.length);
 
 function setup() {
   canvas = createCanvas(800, 800);
