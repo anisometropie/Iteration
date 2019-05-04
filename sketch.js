@@ -11,6 +11,22 @@ class Complex {
     }
   }
 
+  static exp(z) {
+    const _z = z.clone();
+    const real = Math.exp(z.real) * Math.cos(z.imaginary);
+    const imaginary = Math.exp(z.real) * Math.sin(z.imaginary);
+    _z.set(real, imaginary);
+    return _z;
+  }
+
+  static square(z) {
+    const _z = z.clone();
+    const real = z.real ** 2 - z.imaginary ** 2;
+    const imaginary = 2 * z.real * z.imaginary;
+    _z.set(real, imaginary);
+    return _z;
+  }
+
   static fromAngle(modulus, argument) {
     return new Complex(
       modulus * Math.cos(argument),
@@ -61,13 +77,6 @@ class Complex {
   set(a, b) {
     this.real = a;
     this.imaginary = b;
-  }
-
-  get square() {
-    const { real, imaginary } = this;
-    const z = this.clone();
-    z.set(real ** 2 - imaginary ** 2, 2 * real * imaginary);
-    return z;
   }
 
   get modulus() {
@@ -196,7 +205,7 @@ function setup() {
         map(x, 0, DIMENSION, GRAPH.XMIN, GRAPH.XMAX),
         map(y, 0, DIMENSION, GRAPH.YMIN, GRAPH.YMAX)
       );
-      const end = start.square;
+      const end = Complex.square(start);
       return new Vector(start, end);
     })
   );
