@@ -52,6 +52,10 @@ class Complex {
     this.set(real, imaginary);
   }
 
+  add(z) {
+    this.set(this.real + z.real, this.imaginary + z.imaginary);
+  }
+
   set modulus(value) {
     if (value < 0) {
       this.rotate(PI);
@@ -174,12 +178,13 @@ class Vector {
   }
 
   displayNormalized(graph, length) {
+    const graphSize = (graph.XMAX - graph.XMIN) / 2;
     const v = this.clone();
     v.length = length;
     push();
-    const red = map(this.length, 0, 100, 0, 255);
-    const blue = map(this.length, 0, 100, 255, 0);
-    const weight = map(this.length, 0, 1000, 0.4, 20);
+    const red = map(this.length, 0, graphSize ** 2, 0, 255);
+    const blue = map(this.length, 0, graphSize ** 2, 255, 0);
+    const weight = map(this.length, 0, graphSize ** 2, 0.4, 2.5);
     // const weight = d3
     //   .scaleLog()
     //   .domain([10, 100000])
@@ -192,17 +197,36 @@ class Vector {
 }
 
 const DIMENSION = 31;
-const GRAPH = {
-  XMIN: -10,
-  XMAX: 10,
-  YMIN: -10,
-  YMAX: 10
+let GRAPH = {
+  XMIN: -1,
+  XMAX: 1,
+  YMIN: -1,
+  YMAX: 1
 };
 
 let grid;
+const mouse = new ComplexPoint(-0.345, 0.59, "c");
+let slider;
 
 function setup() {
   canvas = createCanvas(800, 800);
+  canvas.parent(document.getElementById("canvas"));
+  slider = select("#slider");
+}
+
+function draw() {
+  background(255);
+  GRAPH = {
+    XMIN: -slider.value(),
+    XMAX: slider.value(),
+    YMIN: -slider.value(),
+    YMAX: slider.value()
+  };
+  drawChart();
+  if (mouseIsPressed && mouseY < height) {
+    mouse.move(mouseX, mouseY, GRAPH);
+  }
+  mouse.display(GRAPH);
   grid = [...Array(DIMENSION).keys()].map(x =>
     [...Array(DIMENSION).keys()].map(y => {
       const start = new ComplexPoint(
@@ -210,14 +234,16 @@ function setup() {
         map(y, 0, DIMENSION, GRAPH.YMIN, GRAPH.YMAX)
       );
       const end = Complex.square(start);
+      end.add(mouse);
       return new Vector(start, end);
     })
   );
+  grid.forEach(arr =>
+    arr.forEach(z => z.displayNormalized(GRAPH, slider.value() / 25))
+  );
 }
 
-function draw() {
-  background(255);
+function drawChart() {
   line(width / 2, 0, width / 2, height);
   line(0, height / 2, width, height / 2);
-  grid.forEach(arr => arr.forEach(z => z.displayNormalized(GRAPH, 0.4)));
 }
