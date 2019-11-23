@@ -50,7 +50,7 @@
     "d3-scale": "^3.2.0",
     "enzyme": "^3.10.0",
     "identity-obj-proxy": "^3.0.0",
-    "simple-complex": "^0.1.1"
+    "simple-complex": "^0.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
