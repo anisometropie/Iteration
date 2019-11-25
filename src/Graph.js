@@ -24,10 +24,10 @@ class Graph {
     const { width, height } = this.canvas.getBoundingClientRect()
     const scaleX = scaleLinear()
       .domain([this.xMin, this.xMax])
-      .range([0, width])
+      .range([0, width * this.pixelRatio])
     const scaleY = scaleLinear()
       .domain([this.yMin, this.yMax])
-      .range([height, 0])
+      .range([height * this.pixelRatio, 0])
     const x = scaleX(complex.real)
     const y = scaleY(complex.imaginary)
     return { x, y }
@@ -36,10 +36,10 @@ class Graph {
   movePointToPixelCoords(complex, x, y) {
     const { width, height } = this.canvas.getBoundingClientRect()
     const scaleX = scaleLinear()
-      .domain([0, width])
+      .domain([0, width * this.pixelRatio])
       .range([this.xMin, this.xMax])
     const scaleY = scaleLinear()
-      .domain([0, height])
+      .domain([0, height * this.pixelRatio])
       .range([this.yMax, this.yMin])
     complex.set(scaleX(x), scaleY(y))
   }
@@ -47,14 +47,18 @@ class Graph {
   drawPoint(complex) {
     const { x, y } = this.getPointPixelCoords(complex)
     this.ctx.beginPath()
-    this.ctx.arc(
-      x * this.pixelRatio,
-      y * this.pixelRatio,
-      2 * this.pixelRatio,
-      0,
-      2 * Math.PI
-    )
+    this.ctx.arc(x, y, 2 * this.pixelRatio, 0, 2 * Math.PI)
     this.ctx.stroke()
+  }
+
+  drawLine(z1, z2) {
+    const { x: x1, y: y1 } = this.getPointPixelCoords(z1)
+    const { x: x2, y: y2 } = this.getPointPixelCoords(z2)
+    this.ctx.beginPath()
+    this.ctx.moveTo(x1, y1)
+    this.ctx.lineTo(x2, y2)
+    this.ctx.stroke()
+    this.ctx.closePath()
   }
 
   displayCoords(graph, line = 0) {
@@ -63,7 +67,7 @@ class Graph {
 
   clear() {
     const { width, height } = this.canvas.getBoundingClientRect()
-    this.ctx.clearRect(0, 0, width, height)
+    this.ctx.clearRect(0, 0, width * this.pixelRatio, height * this.pixelRatio)
   }
 }
 

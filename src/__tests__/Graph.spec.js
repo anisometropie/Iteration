@@ -7,6 +7,8 @@ const fakeCanvas = (width, height) => ({
     beginPath: jest.fn(),
     closePath: jest.fn(),
     arc: jest.fn(),
+    moveTo: jest.fn(),
+    lineTo: jest.fn(),
     fillStyle: jest.fn(),
     stroke: jest.fn(),
     fill: jest.fn(),
@@ -23,6 +25,10 @@ const fakeCanvas = (width, height) => ({
   }
 })
 
+afterEach(() => {
+  global.devicePixelRatio = 1
+})
+
 describe('Graph', () => {
   describe('constructor', () => {
     it('should create an object from given params', () => {
@@ -34,6 +40,34 @@ describe('Graph', () => {
       expect(graph.yMin).toEqual(-1)
       expect(graph.yMax).toEqual(1)
       expect(graph.canvas).toEqual(canvas)
+      expect(graph.ctx).toEqual(canvas.getContext('2d'))
+      expect(graph.pixelRatio).toEqual(1)
+    })
+    it('should have correct pixelRatio', () => {
+      global.devicePixelRatio = 10
+      const canvas = fakeCanvas(10, 250)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      expect(graph.pixelRatio).toEqual(10)
+    })
+  })
+
+  describe('setupCanvas', () => {
+    it('should set sizes and style.sizes', () => {
+      const canvas = fakeCanvas(10, 250)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      expect(graph.canvas.width).toEqual(10)
+      expect(graph.canvas.height).toEqual(250)
+      expect(graph.canvas.style.width).toEqual('10px')
+      expect(graph.canvas.style.height).toEqual('250px')
+    })
+    it('should set sizes and style.sizes with given pixelRatio', () => {
+      global.devicePixelRatio = 3
+      const canvas = fakeCanvas(10, 250)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      expect(graph.canvas.width).toEqual(30)
+      expect(graph.canvas.height).toEqual(750)
+      expect(graph.canvas.style.width).toEqual('10px')
+      expect(graph.canvas.style.height).toEqual('250px')
     })
   })
 
@@ -53,6 +87,21 @@ describe('Graph', () => {
         expect(graph.getPointPixelCoords(right)).toEqual({ x: 100, y: 50 })
         expect(graph.getPointPixelCoords(left)).toEqual({ x: 0, y: 50 })
       })
+      it('should return the complex numbers coords in pixel with devicePixelRatio = 2', () => {
+        global.devicePixelRatio = 2
+        const canvas = fakeCanvas(100, 100)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        const origin = new Complex(0, 0)
+        const top = new Complex(0, 1)
+        const bottom = new Complex(0, -1)
+        const right = new Complex(1, 0)
+        const left = new Complex(-1, 0)
+        expect(graph.getPointPixelCoords(origin)).toEqual({ x: 100, y: 100 })
+        expect(graph.getPointPixelCoords(top)).toEqual({ x: 100, y: 0 })
+        expect(graph.getPointPixelCoords(bottom)).toEqual({ x: 100, y: 200 })
+        expect(graph.getPointPixelCoords(right)).toEqual({ x: 200, y: 100 })
+        expect(graph.getPointPixelCoords(left)).toEqual({ x: 0, y: 100 })
+      })
     })
   })
 
@@ -62,6 +111,15 @@ describe('Graph', () => {
       const graph = new Graph(-1, 1, -1, 1, canvas)
       const z = new Complex(0, 0)
       graph.movePointToPixelCoords(z, 100, 100)
+      expect(z.real).toEqual(1)
+      expect(z.imaginary).toEqual(-1)
+    })
+    it('should move point to coords given pixel coords', () => {
+      global.devicePixelRatio = 3
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const z = new Complex(0, 0)
+      graph.movePointToPixelCoords(z, 300, 300)
       expect(z.real).toEqual(1)
       expect(z.imaginary).toEqual(-1)
     })
@@ -101,6 +159,36 @@ describe('Graph', () => {
     })
   })
 
+  describe('drawLine', () => {
+    it('should draw a line on the canvas', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const z1 = new Complex(-1, -1)
+      const z2 = new Complex(1, 1)
+      graph.drawLine(z1, z2)
+      expect(ctx.beginPath).toHaveBeenCalled()
+      expect(ctx.moveTo.mock.calls[0]).toEqual([0, 100])
+      expect(ctx.lineTo.mock.calls[0]).toEqual([100, 0])
+      expect(ctx.stroke).toHaveBeenCalled()
+      expect(ctx.closePath).toHaveBeenCalled()
+    })
+    it('should draw a line on the canvas with devicePixelRatio = 2', () => {
+      global.devicePixelRatio = 2
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const z1 = new Complex(-1, -1)
+      const z2 = new Complex(1, 1)
+      graph.drawLine(z1, z2)
+      expect(ctx.beginPath).toHaveBeenCalled()
+      expect(ctx.moveTo.mock.calls[0]).toEqual([0, 200])
+      expect(ctx.lineTo.mock.calls[0]).toEqual([200, 0])
+      expect(ctx.stroke).toHaveBeenCalled()
+      expect(ctx.closePath).toHaveBeenCalled()
+    })
+  })
+
   describe('clear', () => {
     it('should clear the graph', () => {
       const canvas = fakeCanvas(100, 100)
@@ -108,6 +196,14 @@ describe('Graph', () => {
       graph.clear()
       const ctx = canvas.getContext('2d')
       expect(ctx.clearRect.mock.calls[0]).toEqual([0, 0, 100, 100])
+    })
+    it('should clear the graph with devicePixelRatio = 2', () => {
+      global.devicePixelRatio = 2
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.clear()
+      const ctx = canvas.getContext('2d')
+      expect(ctx.clearRect.mock.calls[0]).toEqual([0, 0, 200, 200])
     })
   })
 })
