@@ -189,6 +189,37 @@ describe('Graph', () => {
     })
   })
 
+  describe('drawAxes', () => {
+    it('should draw axes', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.drawLine = jest.fn()
+      graph.drawAxes()
+      expect(graph.drawLine.mock.calls[0]).toEqual([
+        new Complex(-1, 0),
+        new Complex(1, 0)
+      ])
+      expect(graph.drawLine.mock.calls[1]).toEqual([
+        new Complex(0, -1),
+        new Complex(0, 1)
+      ])
+    })
+    it('should draw axes', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(0, 10, 0, 20, canvas)
+      graph.drawLine = jest.fn()
+      graph.drawAxes()
+      expect(graph.drawLine.mock.calls[0]).toEqual([
+        new Complex(0, 0),
+        new Complex(10, 0)
+      ])
+      expect(graph.drawLine.mock.calls[1]).toEqual([
+        new Complex(0, 0),
+        new Complex(0, 20)
+      ])
+    })
+  })
+
   describe('clear', () => {
     it('should clear the graph', () => {
       const canvas = fakeCanvas(100, 100)

@@ -1,4 +1,5 @@
 import { scaleLinear } from 'd3-scale'
+import Complex from 'simple-complex'
 
 class Graph {
   constructor(xMin, xMax, yMin, yMax, canvas) {
@@ -59,6 +60,11 @@ class Graph {
     this.ctx.lineTo(x2, y2)
     this.ctx.stroke()
     this.ctx.closePath()
+  }
+
+  drawAxes() {
+    this.drawLine(new Complex(this.xMin, 0), new Complex(this.xMax, 0))
+    this.drawLine(new Complex(0, this.yMin), new Complex(0, this.yMax))
   }
 
   displayCoords(graph, line = 0) {
