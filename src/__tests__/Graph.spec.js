@@ -1,7 +1,7 @@
 import Complex from 'simple-complex'
 import Graph from '../Graph'
 
-const fakeCanvas = (width, height) => ({
+const fakeCanvas = (width, height, left, top) => ({
   style: {},
   ctx: {
     beginPath: jest.fn(),
@@ -17,7 +17,9 @@ const fakeCanvas = (width, height) => ({
   getBoundingClientRect() {
     return {
       width,
-      height
+      height,
+      left,
+      top
     }
   },
   getContext(dim) {
@@ -217,6 +219,39 @@ describe('Graph', () => {
         new Complex(0, 0),
         new Complex(0, 20)
       ])
+    })
+  })
+
+  describe('updateMousePosition', () => {
+    describe('canvas in (0,0)', () => {
+      it('should update mouse position', () => {
+        const canvas = fakeCanvas(100, 100, 0, 0)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        graph.updateMousePosition({ clientX: 50, clientY: 50 })
+        expect(graph.mouse).toEqual({ x: 50, y: 50 })
+      })
+      it('should update mouse position with devicePixelRatio = 2', () => {
+        global.devicePixelRatio = 2
+        const canvas = fakeCanvas(100, 100, 0, 0)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        graph.updateMousePosition({ clientX: 50, clientY: 50 })
+        expect(graph.mouse).toEqual({ x: 100, y: 100 })
+      })
+    })
+    describe('canvas not in (0,0)', () => {
+      it('should update mouse position', () => {
+        const canvas = fakeCanvas(100, 100, 200, 200)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        graph.updateMousePosition({ clientX: 250, clientY: 250 })
+        expect(graph.mouse).toEqual({ x: 50, y: 50 })
+      })
+      it('should update mouse position with devicePixelRatio = 2', () => {
+        global.devicePixelRatio = 2
+        const canvas = fakeCanvas(100, 100, 200, 200)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        graph.updateMousePosition({ clientX: 250, clientY: 250 })
+        expect(graph.mouse).toEqual({ x: 100, y: 100 })
+      })
     })
   })
 

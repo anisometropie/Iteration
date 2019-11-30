@@ -10,6 +10,7 @@ class Graph {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
+    this.mouse = { x: 0, y: 0 }
     this.setupCanvas()
   }
 
@@ -19,6 +20,7 @@ class Graph {
     this.canvas.height = height * this.pixelRatio
     this.canvas.style.width = `${width}px`
     this.canvas.style.height = `${height}px`
+    this.canvas.onmousemove = this.updateMousePosition
   }
 
   getPointPixelCoords(complex) {
@@ -69,6 +71,14 @@ class Graph {
 
   displayCoords(graph, line = 0) {
     text(`${this.name} = ${this.toString()}`, width - 110, 30 + 15 * line)
+  }
+
+  updateMousePosition(event) {
+    const { left, top } = this.canvas.getBoundingClientRect()
+    this.mouse = {
+      x: (event.clientX - left) * this.pixelRatio,
+      y: (event.clientY - top) * this.pixelRatio
+    }
   }
 
   clear() {
