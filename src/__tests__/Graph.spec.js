@@ -247,14 +247,16 @@ describe('Graph', () => {
         const canvas = fakeCanvas(100, 100, 0, 0)
         const graph = new Graph(-1, 1, -1, 1, canvas)
         graph.updateMousePosition({ clientX: 50, clientY: 50 })
-        expect(graph.mouse).toEqual({ x: 50, y: 50 })
+        const expectedMouseValue = new Complex(0, 0)
+        expect(graph.mouse).toEqual(expectedMouseValue)
       })
       it('should update mouse position with devicePixelRatio = 2', () => {
         global.devicePixelRatio = 2
         const canvas = fakeCanvas(100, 100, 0, 0)
         const graph = new Graph(-1, 1, -1, 1, canvas)
         graph.updateMousePosition({ clientX: 50, clientY: 50 })
-        expect(graph.mouse).toEqual({ x: 100, y: 100 })
+        const expectedMouseValue = new Complex(0, 0)
+        expect(graph.mouse).toEqual(expectedMouseValue)
       })
     })
     describe('canvas not in (0,0)', () => {
@@ -262,14 +264,16 @@ describe('Graph', () => {
         const canvas = fakeCanvas(100, 100, 200, 200)
         const graph = new Graph(-1, 1, -1, 1, canvas)
         graph.updateMousePosition({ clientX: 250, clientY: 250 })
-        expect(graph.mouse).toEqual({ x: 50, y: 50 })
+        const expectedMouseValue = new Complex(0, 0)
+        expect(graph.mouse).toEqual(expectedMouseValue)
       })
       it('should update mouse position with devicePixelRatio = 2', () => {
         global.devicePixelRatio = 2
         const canvas = fakeCanvas(100, 100, 200, 200)
         const graph = new Graph(-1, 1, -1, 1, canvas)
         graph.updateMousePosition({ clientX: 250, clientY: 250 })
-        expect(graph.mouse).toEqual({ x: 100, y: 100 })
+        const expectedMouseValue = new Complex(0, 0)
+        expect(graph.mouse).toEqual(expectedMouseValue)
       })
     })
   })

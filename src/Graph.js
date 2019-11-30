@@ -11,7 +11,7 @@ class Graph {
     this.ctx = canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
 
-    this.mouse = { x: 0, y: 0 }
+    this.mouse = new Complex()
     this.setupCanvas()
     this.defineScales()
   }
@@ -78,10 +78,9 @@ class Graph {
 
   updateMousePosition(event) {
     const { left, top } = this.canvas.getBoundingClientRect()
-    this.mouse = {
-      x: (event.clientX - left) * this.pixelRatio,
-      y: (event.clientY - top) * this.pixelRatio
-    }
+    const x = (event.clientX - left) * this.pixelRatio
+    const y = (event.clientY - top) * this.pixelRatio
+    this.mouse.set(this.pixelToNumberScaleX(x), this.pixelToNumberScaleY(y))
   }
 
   clear() {
