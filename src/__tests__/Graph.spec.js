@@ -51,6 +51,25 @@ describe('Graph', () => {
       const graph = new Graph(-1, 1, -1, 1, canvas)
       expect(graph.pixelRatio).toEqual(10)
     })
+    it('should have scales correctly defined', () => {
+      const canvas = fakeCanvas(250, 500)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      expect(graph.numberToPixelScaleX(-1)).toEqual(0)
+      expect(graph.numberToPixelScaleX(0)).toEqual(125)
+      expect(graph.numberToPixelScaleX(1)).toEqual(250)
+
+      expect(graph.numberToPixelScaleY(-1)).toEqual(500)
+      expect(graph.numberToPixelScaleY(0)).toEqual(250)
+      expect(graph.numberToPixelScaleY(1)).toEqual(0)
+
+      expect(graph.pixelToNumberScaleX(0)).toEqual(-1)
+      expect(graph.pixelToNumberScaleX(125)).toEqual(0)
+      expect(graph.pixelToNumberScaleX(250)).toEqual(1)
+
+      expect(graph.pixelToNumberScaleY(0)).toEqual(1)
+      expect(graph.pixelToNumberScaleY(250)).toEqual(0)
+      expect(graph.pixelToNumberScaleY(500)).toEqual(-1)
+    })
   })
 
   describe('setupCanvas', () => {

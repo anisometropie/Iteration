@@ -10,8 +10,10 @@ class Graph {
     this.canvas = canvas
     this.ctx = canvas.getContext('2d')
     this.pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
+
     this.mouse = { x: 0, y: 0 }
     this.setupCanvas()
+    this.defineScales()
   }
 
   setupCanvas() {
@@ -23,28 +25,29 @@ class Graph {
     this.canvas.onmousemove = this.updateMousePosition
   }
 
-  getPointPixelCoords(complex) {
+  defineScales() {
     const { width, height } = this.canvas.getBoundingClientRect()
-    const scaleX = scaleLinear()
+    this.numberToPixelScaleX = scaleLinear()
       .domain([this.xMin, this.xMax])
       .range([0, width * this.pixelRatio])
-    const scaleY = scaleLinear()
+    this.numberToPixelScaleY = scaleLinear()
       .domain([this.yMin, this.yMax])
       .range([height * this.pixelRatio, 0])
-    const x = scaleX(complex.real)
-    const y = scaleY(complex.imaginary)
+    this.pixelToNumberScaleX = scaleLinear()
+      .domain([0, width * this.pixelRatio])
+      .range([this.xMin, this.xMax])
+    this.pixelToNumberScaleY = scaleLinear()
+      .domain([0, height * this.pixelRatio])
+      .range([this.yMax, this.yMin])
+  }
+  getPointPixelCoords(complex) {
+    const x = this.numberToPixelScaleX(complex.real)
+    const y = this.numberToPixelScaleY(complex.imaginary)
     return { x, y }
   }
 
   movePointToPixelCoords(complex, x, y) {
-    const { width, height } = this.canvas.getBoundingClientRect()
-    const scaleX = scaleLinear()
-      .domain([0, width * this.pixelRatio])
-      .range([this.xMin, this.xMax])
-    const scaleY = scaleLinear()
-      .domain([0, height * this.pixelRatio])
-      .range([this.yMax, this.yMin])
-    complex.set(scaleX(x), scaleY(y))
+    complex.set(this.pixelToNumberScaleX(x), this.pixelToNumberScaleY(y))
   }
 
   drawPoint(complex) {
