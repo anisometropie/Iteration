@@ -76,7 +76,7 @@ class Graph {
     text(`${this.name} = ${this.toString()}`, width - 110, 30 + 15 * line)
   }
 
-  updateMousePosition(event) {
+  updateMousePosition = event => {
     const { left, top } = this.canvas.getBoundingClientRect()
     const x = (event.clientX - left) * this.pixelRatio
     const y = (event.clientY - top) * this.pixelRatio
