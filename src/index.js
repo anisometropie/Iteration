@@ -23,7 +23,9 @@ function draw() {
   graph.drawPoint(graph.mouse)
   generateValues(values)
   values.forEach((v, i) => {
-    graph.drawLine(v, values[i + 1])
+    if (i < ITERATIONS) {
+      graph.drawLine(v, values[i + 1])
+    }
     graph.drawPoint(v)
   })
 }
