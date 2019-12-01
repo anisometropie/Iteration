@@ -44,6 +44,8 @@ describe('Graph', () => {
       expect(graph.canvas).toEqual(canvas)
       expect(graph.ctx).toEqual(canvas.getContext('2d'))
       expect(graph.pixelRatio).toEqual(1)
+      expect(graph.mouse).toBeInstanceOf(Complex)
+      expect(graph.mouseSensitivity).toEqual(1)
     })
     it('should have correct pixelRatio', () => {
       global.devicePixelRatio = 10
@@ -260,6 +262,14 @@ describe('Graph', () => {
       global.devicePixelRatio = 2
       const canvas = fakeCanvas(100, 100, 0, 0)
       const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.updateMousePosition({ movementX: 10, movementY: 10 })
+      const expectedMouseValue = new Complex(0.1, -0.1)
+      expect(graph.mouse).toEqual(expectedMouseValue)
+    })
+    it('should update mouse position with mouseSensitivity = 1/2', () => {
+      const canvas = fakeCanvas(100, 100, 0, 0)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.mouseSensitivity = 1 / 2
       graph.updateMousePosition({ movementX: 10, movementY: 10 })
       const expectedMouseValue = new Complex(0.1, -0.1)
       expect(graph.mouse).toEqual(expectedMouseValue)

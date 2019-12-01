@@ -16,6 +16,16 @@ const values = [new Complex(0, 0), ...Array(ITERATIONS).keys()].map(
   n => new Complex()
 )
 
+canvas.onwheel = event => {
+  const { deltaY } = event
+  console.log(deltaY)
+  if (deltaY < 0 && graph.mouseSensitivity < 1) {
+    graph.mouseSensitivity *= 2
+  } else if (deltaY > 0) {
+    graph.mouseSensitivity /= 2
+  }
+}
+
 function draw() {
   window.requestAnimationFrame(draw)
   graph.clear()

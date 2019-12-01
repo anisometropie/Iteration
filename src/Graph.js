@@ -14,6 +14,7 @@ class Graph {
     this.pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1
 
     this.mouse = new Complex()
+    this.mouseSensitivity = 1
     this.setupCanvas()
     this.defineScales()
   }
@@ -80,8 +81,8 @@ class Graph {
 
   updateMousePosition = event => {
     const { width, height } = this.canvas.getBoundingClientRect()
-    const xRatio = (this.xMax - this.xMin) / width
-    const yRatio = (this.yMin - this.yMax) / height
+    const xRatio = (this.mouseSensitivity * (this.xMax - this.xMin)) / width
+    const yRatio = (this.mouseSensitivity * (this.yMin - this.yMax)) / height
     const x = (event.movementX / this.pixelRatio) * xRatio
     const y = (event.movementY / this.pixelRatio) * yRatio
     this.mouse.add(new Complex(x, y))
