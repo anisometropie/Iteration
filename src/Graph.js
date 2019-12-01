@@ -1,6 +1,8 @@
 import { scaleLinear } from 'd3-scale'
 import Complex from 'simple-complex'
 
+import { setPointerLock } from 'engine/pointerLock'
+
 class Graph {
   constructor(xMin, xMax, yMin, yMax, canvas) {
     this.xMin = xMin
@@ -22,7 +24,7 @@ class Graph {
     this.canvas.height = height * this.pixelRatio
     this.canvas.style.width = `${width}px`
     this.canvas.style.height = `${height}px`
-    this.canvas.onmousemove = this.updateMousePosition
+    setPointerLock(this.canvas, this.updateMousePosition)
   }
 
   defineScales() {
@@ -77,10 +79,12 @@ class Graph {
   }
 
   updateMousePosition = event => {
-    const { left, top } = this.canvas.getBoundingClientRect()
-    const x = (event.clientX - left) * this.pixelRatio
-    const y = (event.clientY - top) * this.pixelRatio
-    this.mouse.set(this.pixelToNumberScaleX(x), this.pixelToNumberScaleY(y))
+    const { width, height } = this.canvas.getBoundingClientRect()
+    const xRatio = (this.xMax - this.xMin) / width
+    const yRatio = (this.yMin - this.yMax) / height
+    const x = (event.movementX / this.pixelRatio) * xRatio
+    const y = (event.movementY / this.pixelRatio) * yRatio
+    this.mouse.add(new Complex(x, y))
   }
 
   clear() {
