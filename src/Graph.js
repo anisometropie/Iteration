@@ -26,6 +26,7 @@ class Graph {
     this.canvas.style.width = `${width}px`
     this.canvas.style.height = `${height}px`
     setPointerLock(this.canvas, this.updateMousePosition)
+    this.ctx.font = `${10 * this.pixelRatio}px sans-serif`
   }
 
   defineScales() {
@@ -75,8 +76,11 @@ class Graph {
     this.drawLine(new Complex(0, this.yMin), new Complex(0, this.yMax))
   }
 
-  displayCoords(graph, line = 0) {
-    text(`${this.name} = ${this.toString()}`, width - 110, 30 + 15 * line)
+  displayText(text, line = 0) {
+    const { width } = this.canvas.getBoundingClientRect()
+    const x = (width - text.length * 6) * this.pixelRatio
+    const y = (15 + 15 * line) * this.pixelRatio
+    this.ctx.fillText(text, x, y)
   }
 
   updateMousePosition = event => {

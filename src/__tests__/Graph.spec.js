@@ -12,7 +12,9 @@ const fakeCanvas = (width, height, left, top) => ({
     fillStyle: jest.fn(),
     stroke: jest.fn(),
     fill: jest.fn(),
-    clearRect: jest.fn()
+    clearRect: jest.fn(),
+    font: jest.fn(),
+    fillText: jest.fn()
   },
   getBoundingClientRect() {
     return {
@@ -91,6 +93,7 @@ describe('Graph', () => {
       expect(graph.canvas.height).toEqual(750)
       expect(graph.canvas.style.width).toEqual('10px')
       expect(graph.canvas.style.height).toEqual('250px')
+      expect(graph.ctx.font).toEqual('30px sans-serif')
     })
   })
 
@@ -291,6 +294,31 @@ describe('Graph', () => {
       graph.clear()
       const ctx = canvas.getContext('2d')
       expect(ctx.clearRect.mock.calls[0]).toEqual([0, 0, 200, 200])
+    })
+  })
+
+  describe('displayText', () => {
+    it('should display on the first line with correct position', () => {
+      const canvas = fakeCanvas(1200, 800)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.displayText('abcde-----')
+      const ctx = canvas.getContext('2d')
+      expect(ctx.fillText.mock.calls[0]).toEqual(['abcde-----', 1140, 15])
+    })
+    it('should display on the second line with correct position', () => {
+      const canvas = fakeCanvas(1200, 800)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.displayText('abcde-----', 1)
+      const ctx = canvas.getContext('2d')
+      expect(ctx.fillText.mock.calls[0]).toEqual(['abcde-----', 1140, 30])
+    })
+    it('should display on the first line with devicePixelRatio = 2', () => {
+      global.devicePixelRatio = 2
+      const canvas = fakeCanvas(1200, 800)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.displayText('abcde-----abcde')
+      const ctx = canvas.getContext('2d')
+      expect(ctx.fillText.mock.calls[0]).toEqual(['abcde-----abcde', 2220, 30])
     })
   })
 })
