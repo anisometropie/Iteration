@@ -18,7 +18,6 @@ const values = [new Complex(0, 0), ...Array(ITERATIONS).keys()].map(
 
 canvas.onwheel = event => {
   const { deltaY } = event
-  console.log(deltaY)
   if (deltaY < 0 && graph.mouseSensitivity < 1) {
     graph.mouseSensitivity *= 2
   } else if (deltaY > 0) {
