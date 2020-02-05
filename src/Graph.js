@@ -29,6 +29,14 @@ class Graph {
     this.ctx.font = `${10 * this.pixelRatio}px sans-serif`
   }
 
+  setRanges(xMin, xMax, yMin, yMax) {
+    this.xMin = xMin
+    this.xMax = xMax
+    this.yMin = yMin
+    this.yMax = yMax
+    this.defineScales()
+  }
+
   defineScales() {
     const { width, height } = this.canvas.getBoundingClientRect()
     this.numberToPixelScaleX = scaleLinear()
@@ -44,6 +52,7 @@ class Graph {
       .domain([0, height * this.pixelRatio])
       .range([this.yMax, this.yMin])
   }
+
   getPointPixelCoords(complex) {
     const x = this.numberToPixelScaleX(complex.real)
     const y = this.numberToPixelScaleY(complex.imaginary)

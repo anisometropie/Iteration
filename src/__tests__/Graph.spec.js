@@ -97,6 +97,22 @@ describe('Graph', () => {
     })
   })
 
+  describe('setRanges', () => {
+    it('should change xMin, xMax, yMin, yMax', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      graph.defineScales = jest.fn()
+
+      graph.setRanges(0, 1, 0, 1)
+
+      expect(graph.xMin).toEqual(0)
+      expect(graph.xMax).toEqual(1)
+      expect(graph.yMin).toEqual(0)
+      expect(graph.xMax).toEqual(1)
+      expect(graph.defineScales).toHaveBeenCalled()
+    })
+  })
+
   describe('getPointPixelCoords', () => {
     describe('2×2 graph', () => {
       it('should return the complex numbers coords in pixel', () => {
