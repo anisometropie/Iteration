@@ -40,5 +40,6 @@ function draw() {
   const sensitivityValue = `${graph.mouseSensitivity !== 1 ? '1/' : ''}${1 /
     graph.mouseSensitivity}`
   graph.displayText(`Mouse sensitivity: ${sensitivityValue}`)
+  graph.displayText(graph.mouse.toString(), 1)
 }
 draw()
