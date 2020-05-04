@@ -6,7 +6,7 @@ const canvas = document.getElementById('canvas')
 const checkbox = document.getElementById('checkbox')
 
 export const ITERATIONS = 1000
-const graph = new Graph(-2, 1, -1, 1, canvas)
+const graph = new Graph(-2.25, 1.125, -1.125, 1.125, canvas)
 const values = [new Complex(0, 0), ...Array(ITERATIONS).keys()].map(
   n => new Complex()
 )
