@@ -59,6 +59,12 @@ class Graph {
     return { x, y }
   }
 
+  getComplexFromPixelCoords(x, y) {
+    const real = this.pixelToNumberScaleX(x)
+    const imaginary = this.pixelToNumberScaleY(y)
+    return new Complex(real, imaginary)
+  }
+
   movePointToPixelCoords(complex, x, y) {
     complex.set(this.pixelToNumberScaleX(x), this.pixelToNumberScaleY(y))
   }

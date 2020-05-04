@@ -150,6 +150,40 @@ describe('Graph', () => {
     })
   })
 
+  describe('getComplexFromPixelCoords', () => {
+    describe('2×2 graph', () => {
+      it('should return the complex numbers coords in pixel', () => {
+        const canvas = fakeCanvas(100, 100)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        const origin = new Complex(0, 0)
+        const top = new Complex(0, 1)
+        const bottom = new Complex(0, -1)
+        const right = new Complex(1, 0)
+        const left = new Complex(-1, 0)
+        expect(graph.getComplexFromPixelCoords(50, 50)).toEqual(origin)
+        expect(graph.getComplexFromPixelCoords(50, 0)).toEqual(top)
+        expect(graph.getComplexFromPixelCoords(50, 100)).toEqual(bottom)
+        expect(graph.getComplexFromPixelCoords(100, 50)).toEqual(right)
+        expect(graph.getComplexFromPixelCoords(0, 50)).toEqual(left)
+      })
+      it('should return the complex numbers coords in pixel with devicePixelRatio = 2', () => {
+        global.devicePixelRatio = 2
+        const canvas = fakeCanvas(100, 100)
+        const graph = new Graph(-1, 1, -1, 1, canvas)
+        const origin = new Complex(0, 0)
+        const top = new Complex(0, 1)
+        const bottom = new Complex(0, -1)
+        const right = new Complex(1, 0)
+        const left = new Complex(-1, 0)
+        expect(graph.getComplexFromPixelCoords(100, 100)).toEqual(origin)
+        expect(graph.getComplexFromPixelCoords(100, 0)).toEqual(top)
+        expect(graph.getComplexFromPixelCoords(100, 200)).toEqual(bottom)
+        expect(graph.getComplexFromPixelCoords(200, 100)).toEqual(right)
+        expect(graph.getComplexFromPixelCoords(0, 100)).toEqual(left)
+      })
+    })
+  })
+
   describe('movePointToPixelCoords', () => {
     it('should move point to coords given pixel coords', () => {
       const canvas = fakeCanvas(100, 100)
