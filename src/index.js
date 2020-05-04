@@ -3,6 +3,7 @@ import Graph from './Graph'
 import { generateValues, iterate } from './maths'
 
 const canvas = document.getElementById('canvas')
+const checkbox = document.getElementById('checkbox')
 
 export const ITERATIONS = 1000
 const graph = new Graph(-2, 1, -1, 1, canvas)
@@ -18,10 +19,21 @@ document.body.onwheel = event => {
     graph.mouseSensitivity /= 2
   }
 }
+checkbox.onclick = event => {
+  const { checked } = event.target
+  if (checked && !fractal) {
+    drawMandelbrot()
+  }
+}
+
+let fractal
 
 function draw() {
   window.requestAnimationFrame(draw)
   graph.clear()
+  if (checkbox.checked) {
+    graph.putImageData(fractal)
+  }
   graph.drawAxes()
   graph.drawPoint(graph.mouse)
   generateValues(values, graph.mouse)
