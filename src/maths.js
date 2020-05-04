@@ -8,4 +8,4 @@ export const generateValues = (values = [], c) => {
   }
 }
 
-const iterate = (z, c) => Complex.sum(Complex.square(z), c)
+export const iterate = (z, c) => Complex.sum(Complex.square(z), c)
