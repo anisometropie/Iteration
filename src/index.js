@@ -21,8 +21,15 @@ document.body.onwheel = event => {
 }
 checkbox.onclick = event => {
   const { checked } = event.target
-  if (checked && !fractal) {
-    drawMandelbrot()
+  if (checked) {
+    if (!fractal) {
+      drawMandelbrot()
+    }
+    graph.ctx.fillStyle = 'white'
+    graph.ctx.strokeStyle = 'white'
+  } else {
+    graph.ctx.fillStyle = 'black'
+    graph.ctx.strokeStyle = 'black'
   }
 }
 
@@ -50,7 +57,7 @@ function draw() {
 }
 draw()
 
-const maxIteration = 15
+const maxIteration = 50
 function drawMandelbrot() {
   fractal = graph.createImageData()
   for (let i = 0; i < graph.canvas.width; i++) {
