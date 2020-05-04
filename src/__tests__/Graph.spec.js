@@ -14,7 +14,10 @@ const fakeCanvas = (width, height, left, top) => ({
     fill: jest.fn(),
     clearRect: jest.fn(),
     font: jest.fn(),
-    fillText: jest.fn()
+    fillText: jest.fn(),
+    getImageData: jest.fn(() => 'imageData'),
+    createImageData: jest.fn(() => 'newImageData'),
+    putImageData: jest.fn()
   },
   getBoundingClientRect() {
     return {
@@ -336,5 +339,54 @@ describe('Graph', () => {
       const ctx = canvas.getContext('2d')
       expect(ctx.fillText.mock.calls[0]).toEqual(['abcde-----abcde', 2220, 30])
     })
+  })
+
+  describe('getImageData', () => {
+    it('should return ImageData', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const image = graph.getImageData()
+      expect(image).toEqual('imageData')
+      expect(ctx.getImageData.mock.calls[0]).toEqual([0, 0, 100, 100])
+    })
+    it('should return ImageData with devicePixelRatio = 2', () => {
+      global.devicePixelRatio = 2
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const image = graph.getImageData()
+      expect(image).toEqual('imageData')
+      expect(ctx.getImageData.mock.calls[0]).toEqual([0, 0, 200, 200])
+    })
+  })
+
+  describe('createImageData', () => {
+    it('should return empty ImageData', () => {
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const image = graph.createImageData()
+      expect(image).toEqual('newImageData')
+      expect(ctx.createImageData.mock.calls[0]).toEqual([100, 100])
+    })
+    it('should return empty ImageData with devicePixelRatio = 2', () => {
+      global.devicePixelRatio = 2
+      const canvas = fakeCanvas(100, 100)
+      const graph = new Graph(-1, 1, -1, 1, canvas)
+      const ctx = canvas.getContext('2d')
+      const image = graph.createImageData()
+      expect(image).toEqual('newImageData')
+      expect(ctx.createImageData.mock.calls[0]).toEqual([200, 200])
+    })
+  })
+
+  describe('putImageData', () => {
+    const canvas = fakeCanvas(100, 100)
+    const graph = new Graph(-1, 1, -1, 1, canvas)
+    const ctx = canvas.getContext('2d')
+    const image = 'image'
+    graph.putImageData(image)
+    expect(ctx.putImageData.mock.calls[0]).toEqual([image, 0, 0])
   })
 })

@@ -105,6 +105,18 @@ class Graph {
     const { width, height } = this.canvas.getBoundingClientRect()
     this.ctx.clearRect(0, 0, width * this.pixelRatio, height * this.pixelRatio)
   }
+
+  getImageData() {
+    return this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
+  }
+
+  createImageData() {
+    return this.ctx.createImageData(this.canvas.width, this.canvas.height)
+  }
+
+  putImageData(imageData) {
+    return this.ctx.putImageData(imageData, 0, 0)
+  }
 }
 
 export default Graph
