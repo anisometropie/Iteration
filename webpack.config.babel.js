@@ -19,7 +19,12 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpg|gif)$/,
-        use: ['file-loader']
+        loader: 'file-loader?name=/[name].[ext]',
+        options: {
+          publicPath: '/',
+          outputPath: 'public',
+          name: '[name].[ext]'
+        }
       }
     ]
   },
