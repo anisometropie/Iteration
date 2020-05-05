@@ -1,6 +1,13 @@
 import Complex from 'simple-complex'
 import Graph from './Graph'
 import { generateValues, iterate } from './maths'
+import closeFile from 'assets/close.png'
+import farFile from 'assets/far.png'
+
+const close = new Image()
+close.src = closeFile
+const far = new Image()
+far.src = farFile
 
 const canvas = document.getElementById('canvas')
 const checkbox = document.getElementById('checkbox')
@@ -45,14 +52,14 @@ zoomCheckbox.onclick = event => {
   }
 }
 
-const fractal = { close: null, far: null }
+const fractal = { close, far }
 let currentZoom = 'close'
 
 function draw() {
   window.requestAnimationFrame(draw)
   graph.clear()
   if (checkbox.checked) {
-    graph.putImageData(fractal[currentZoom])
+    graph.drawImage(fractal[currentZoom])
   }
   graph.drawAxes()
   graph.drawPoint(graph.mouse)

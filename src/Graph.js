@@ -124,12 +124,8 @@ class Graph {
     return this.ctx.putImageData(imageData, 0, 0)
   }
 
-  drawImage(imageData) {
-    const image = new Image()
-    image.src = imageData
-    image.onload = () => {
-      this.ctx.drawImage(image, 0, 0)
-    }
+  drawImage(image) {
+    this.ctx.drawImage(image, 0, 0)
   }
 }
 
