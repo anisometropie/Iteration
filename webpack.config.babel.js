@@ -1,3 +1,5 @@
+const path = require('path')
+
 module.exports = {
   entry: './src/index.js',
   output: {
@@ -27,6 +29,9 @@ module.exports = {
         }
       }
     ]
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'public')
   },
   mode: 'development'
 }
