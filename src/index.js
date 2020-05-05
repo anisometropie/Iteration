@@ -19,6 +19,12 @@ const values = [new Complex(0, 0), ...Array(ITERATIONS).keys()].map(
   n => new Complex()
 )
 
+document.body.onkeypress = event => {
+  if (event.code === 'Space') {
+    checkbox.checked = !checkbox.checked
+    handleDisplayFractalChange({ target: checkbox })
+  }
+}
 document.body.onwheel = event => {
   const { deltaY } = event
   if (deltaY < 0 && graph.mouseSensitivity < 1) {
@@ -27,7 +33,7 @@ document.body.onwheel = event => {
     graph.mouseSensitivity /= 2
   }
 }
-checkbox.onclick = event => {
+const handleDisplayFractalChange = event => {
   const { checked } = event.target
   if (checked) {
     drawMandelbrot()
@@ -38,6 +44,7 @@ checkbox.onclick = event => {
     graph.ctx.strokeStyle = 'black'
   }
 }
+checkbox.onclick = handleDisplayFractalChange
 zoomCheckbox.onclick = event => {
   const { checked } = event.target
   if (checked) {
