@@ -17,7 +17,8 @@ const fakeCanvas = (width, height, left, top) => ({
     fillText: jest.fn(),
     getImageData: jest.fn(() => 'imageData'),
     createImageData: jest.fn(() => 'newImageData'),
-    putImageData: jest.fn()
+    putImageData: jest.fn(),
+    drawImage: jest.fn()
   },
   getBoundingClientRect() {
     return {
@@ -422,5 +423,14 @@ describe('Graph', () => {
     const image = 'image'
     graph.putImageData(image)
     expect(ctx.putImageData.mock.calls[0]).toEqual([image, 0, 0])
+  })
+
+  describe('drawImage', () => {
+    const canvas = fakeCanvas(100, 100)
+    const graph = new Graph(-1, 1, -1, 1, canvas)
+    const ctx = canvas.getContext('2d')
+    const image = 'image'
+    graph.drawImage(image)
+    expect(ctx.drawImage.mock.calls[0]).toEqual([image, 0, 0])
   })
 })
