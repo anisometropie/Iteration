@@ -4,6 +4,7 @@ import { generateValues, iterate } from './maths'
 
 const canvas = document.getElementById('canvas')
 const checkbox = document.getElementById('checkbox')
+const zoomCheckbox = document.getElementById('zoom-checkbox')
 
 export const ITERATIONS = 1000
 const graph = new Graph(-2.25, 1.125, -1.125, 1.125, canvas)
@@ -22,9 +23,7 @@ document.body.onwheel = event => {
 checkbox.onclick = event => {
   const { checked } = event.target
   if (checked) {
-    if (!fractal) {
-      drawMandelbrot()
-    }
+    drawMandelbrot()
     graph.ctx.fillStyle = 'white'
     graph.ctx.strokeStyle = 'white'
   } else {
@@ -32,14 +31,28 @@ checkbox.onclick = event => {
     graph.ctx.strokeStyle = 'black'
   }
 }
+zoomCheckbox.onclick = event => {
+  const { checked } = event.target
+  if (checked) {
+    currentZoom = 'close'
+    graph.setRanges(-2.25, 1.125, -1.125, 1.125)
+  } else {
+    currentZoom = 'far'
+    graph.setRanges(-3, 3, -2, 2)
+  }
+  if (checkbox.checked) {
+    drawMandelbrot()
+  }
+}
 
-let fractal
+const fractal = { close: null, far: null }
+let currentZoom = 'close'
 
 function draw() {
   window.requestAnimationFrame(draw)
   graph.clear()
   if (checkbox.checked) {
-    graph.putImageData(fractal)
+    graph.putImageData(fractal[currentZoom])
   }
   graph.drawAxes()
   graph.drawPoint(graph.mouse)
@@ -59,31 +72,33 @@ draw()
 
 const maxIteration = 50
 function drawMandelbrot() {
-  fractal = graph.createImageData()
-  for (let i = 0; i < graph.canvas.width; i++) {
-    for (let j = 0; j < graph.canvas.height; j++) {
-      const c = graph.getComplexFromPixelCoords(i, j)
-      let z = new Complex(0, 0)
-      let n = 0
-      while (n < maxIteration) {
-        const zNext = iterate(z, c)
-        if (zNext.modulus > 2) {
-          break
+  if (!fractal[currentZoom]) {
+    fractal[currentZoom] = graph.createImageData()
+    for (let i = 0; i < graph.canvas.width; i++) {
+      for (let j = 0; j < graph.canvas.height; j++) {
+        const c = graph.getComplexFromPixelCoords(i, j)
+        let z = new Complex(0, 0)
+        let n = 0
+        while (n < maxIteration) {
+          const zNext = iterate(z, c)
+          if (zNext.modulus > 2) {
+            break
+          }
+          n++
+          z = zNext
         }
-        n++
-        z = zNext
-      }
-      const pixelIndex = (i + j * graph.canvas.width) * 4
-      if (n === maxIteration) {
-        fractal.data[pixelIndex] = 0
-        fractal.data[pixelIndex + 1] = 0
-        fractal.data[pixelIndex + 2] = 0
-        fractal.data[pixelIndex + 3] = 255
-      } else {
-        fractal.data[pixelIndex] = (n * 16) % 255
-        fractal.data[pixelIndex + 1] = (n * 16) % 255
-        fractal.data[pixelIndex + 2] = (n * 16) % 255
-        fractal.data[pixelIndex + 3] = 255
+        const pixelIndex = (i + j * graph.canvas.width) * 4
+        if (n === maxIteration) {
+          fractal[currentZoom].data[pixelIndex] = 0
+          fractal[currentZoom].data[pixelIndex + 1] = 0
+          fractal[currentZoom].data[pixelIndex + 2] = 0
+          fractal[currentZoom].data[pixelIndex + 3] = 255
+        } else {
+          fractal[currentZoom].data[pixelIndex] = (n * 16) % 255
+          fractal[currentZoom].data[pixelIndex + 1] = (n * 16) % 255
+          fractal[currentZoom].data[pixelIndex + 2] = (n * 16) % 255
+          fractal[currentZoom].data[pixelIndex + 3] = 255
+        }
       }
     }
   }
