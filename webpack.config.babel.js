@@ -3,8 +3,8 @@ const path = require('path')
 module.exports = {
   entry: './src/index.js',
   output: {
-    path: __dirname,
-    filename: 'public/bundle.js'
+    path: path.join(__dirname, 'public'),
+    filename: 'bundle.js'
   },
   module: {
     rules: [
@@ -24,7 +24,7 @@ module.exports = {
         loader: 'file-loader?name=/[name].[ext]',
         options: {
           publicPath: '/',
-          outputPath: 'public',
+          outputPath: '',
           name: '[name].[ext]'
         }
       }
