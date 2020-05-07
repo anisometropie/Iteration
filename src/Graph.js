@@ -125,7 +125,7 @@ class Graph {
   }
 
   drawImage(image) {
-    this.ctx.drawImage(image, 0, 0)
+    this.ctx.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
   }
 }
 
