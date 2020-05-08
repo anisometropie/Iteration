@@ -21,3 +21,7 @@ canvas {
 #slider {
   width: 400px;
 }
+
+#values {
+  padding: 15px 50px;
+}

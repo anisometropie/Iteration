@@ -12,6 +12,8 @@ far.src = farFile
 const canvas = document.getElementById('canvas')
 const checkbox = document.getElementById('checkbox')
 const zoomCheckbox = document.getElementById('zoom-checkbox')
+const valuesCheckbox = document.getElementById('values-checkbox')
+const divValues = document.getElementById('values')
 
 export const ITERATIONS = 1000
 const graph = new Graph(-2.25, 1.125, -1.125, 1.125, canvas)
@@ -69,8 +71,8 @@ function draw() {
     graph.drawImage(fractal[currentZoom])
   }
   graph.drawAxes()
-  graph.drawPoint(graph.mouse)
   generateValues(values, graph.mouse)
+  displayValues(values)
   values.forEach((v, i) => {
     if (i < ITERATIONS) {
       graph.drawLine(v, values[i + 1])
@@ -116,4 +118,10 @@ function drawMandelbrot() {
       }
     }
   }
+}
+function displayValues(values) {
+  const string = values.slice(0, 20).reduce((acc, z) => {
+    return `${acc}${z.toString()}<br>`
+  }, '')
+  divValues.innerHTML = valuesCheckbox.checked ? string : ''
 }
