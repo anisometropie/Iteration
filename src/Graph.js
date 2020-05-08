@@ -27,6 +27,7 @@ class Graph {
     this.canvas.style.height = `${height}px`
     setPointerLock(this.canvas, this.updateMousePosition)
     this.ctx.font = `${10 * this.pixelRatio}px sans-serif`
+    this.ctx.textAlign = `right`
   }
 
   setRanges(xMin, xMax, yMin, yMax) {
@@ -93,7 +94,7 @@ class Graph {
 
   displayText(text, line = 0) {
     const { width } = this.canvas.getBoundingClientRect()
-    const x = (width - text.length * 6) * this.pixelRatio
+    const x = (width - 15) * this.pixelRatio
     const y = (15 + 15 * line) * this.pixelRatio
     this.ctx.fillText(text, x, y)
   }
