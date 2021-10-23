@@ -28,13 +28,9 @@ document.body.onkeypress = event => {
   }
 }
 document.body.onwheel = event => {
-  const { deltaY } = event
-  if (deltaY < 0 && graph.mouseSensitivity < 1) {
-    graph.mouseSensitivity *= 2
-  } else if (deltaY > 0) {
-    graph.mouseSensitivity /= 2
+  graph.updateMouseSensitivity(event);
   }
-}
+
 const handleDisplayFractalChange = event => {
   const { checked } = event.target
   if (checked) {
@@ -46,6 +42,7 @@ const handleDisplayFractalChange = event => {
     graph.ctx.strokeStyle = 'black'
   }
 }
+
 checkbox.onclick = handleDisplayFractalChange
 zoomCheckbox.onclick = event => {
   const { checked } = event.target

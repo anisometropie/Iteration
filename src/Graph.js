@@ -99,6 +99,15 @@ class Graph {
     this.ctx.fillText(text, x, y)
   }
 
+  updateMouseSensitivity = event => {
+    const { deltaY } = event
+    if (deltaY < 0 && this.mouseSensitivity < 1) {
+      this.mouseSensitivity *= 2
+    } else if (deltaY > 0) {
+      this.mouseSensitivity /= 2
+    }
+  }
+
   updateMousePosition = event => {
     const { width, height } = this.canvas.getBoundingClientRect()
     const xRatio = (this.mouseSensitivity * (this.xMax - this.xMin)) / width
